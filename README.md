@@ -15,7 +15,8 @@ Let's start by importing a dataset to use for demonstration. In this case, we'll
 
 ```python
 import pandas as pd
-df = pd.read_csv('/Users/matthew.mitchell/Documents/Data_Sources/titanic.csv')
+import numpy as np
+df = pd.read_csv('titanic.csv')
 print(len(df))
 df.head()
 ```
@@ -44,6 +45,7 @@ df.head()
   <thead>
     <tr style="text-align: right;">
       <th></th>
+      <th>Unnamed: 0</th>
       <th>PassengerId</th>
       <th>Survived</th>
       <th>Pclass</th>
@@ -61,6 +63,7 @@ df.head()
   <tbody>
     <tr>
       <th>0</th>
+      <td>0</td>
       <td>1</td>
       <td>0</td>
       <td>3</td>
@@ -76,6 +79,7 @@ df.head()
     </tr>
     <tr>
       <th>1</th>
+      <td>1</td>
       <td>2</td>
       <td>1</td>
       <td>1</td>
@@ -91,6 +95,7 @@ df.head()
     </tr>
     <tr>
       <th>2</th>
+      <td>2</td>
       <td>3</td>
       <td>1</td>
       <td>3</td>
@@ -106,6 +111,7 @@ df.head()
     </tr>
     <tr>
       <th>3</th>
+      <td>3</td>
       <td>4</td>
       <td>1</td>
       <td>1</td>
@@ -121,6 +127,7 @@ df.head()
     </tr>
     <tr>
       <th>4</th>
+      <td>4</td>
       <td>5</td>
       <td>0</td>
       <td>3</td>
@@ -218,7 +225,7 @@ np.mean(sample_means)
 
 
 
-    29.779459363034896
+    29.678139189972246
 
 
 
