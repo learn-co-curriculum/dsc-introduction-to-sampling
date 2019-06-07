@@ -176,7 +176,7 @@ sample.Age.mean() #Calculate the sample mean
 
 
 
-It's not a bad estimate, even though it's not exact. From here we can start to ask many question related to how confident we are in this estimate. A first simple approach is to quantify our estimate. Perhaps we look at our percent error:
+It's not a bad estimate, even though it's not exact. From here we can start to ask many questions related to how confident we are in this estimate. A first simple approach is to quantify our estimate. Perhaps we look at our percent error:
 
 
 ```python
