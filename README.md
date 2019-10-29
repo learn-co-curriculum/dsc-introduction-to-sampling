@@ -8,7 +8,7 @@ Rarely, if ever, are we able to completely survey a population of interest. Simi
 
 ## Objectives
 You will be able to:
-* Understand how sampling methods are used to gain insight about a population
+* Describe how samples are able to allow data scientists to gain insights to a population
 
 Let's start by importing a dataset to use for demonstration. In this case, we'll use a datafile concerning individuals who were on board the Titanic. We'll use this as our entire population and start to observe how the point estimates from various samples of this population behave.
 
@@ -214,7 +214,7 @@ plt.hist(sample_means, bins=250);
 ![png](index_files/index_12_0.png)
 
 
-Interesting! The first thing to note here is that the sample means form a normal distribution! What's more, is let's take a look at the mean of our sample means:
+Interesting! The first thing to note here is that the sample means form a normal distribution! What's more, let's take a look at the mean of our sample means:
 
 
 ```python
