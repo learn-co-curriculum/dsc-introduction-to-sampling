@@ -16,6 +16,28 @@ If we performed a complete enumeration of all data points (e.g. testing every pe
 
 More realistically, data scientists are typically working with a **sample** that represents some subset of the population of interest. From that sample, we can calculate **point estimates** for measurements such as the mean. Then using our knowledge of statistical distributions, we are able to make inferences about about the true population statistics, without ever having to survey the entire population!
 
+### Connections to Previous Concepts
+
+These concepts tie in to the **set theory concepts** previously introduced:
+
+* The *population* is equivalent to the *universal set*. Just like a universal set, a population is not necessarily all possible things that have ever existed, it just means all possible things within some defined specification.
+* The *sample* is a *subset* of this population. Every element in the sample is part of the population. In theory we could have a sample that includes every member of the population, but typically when we call something a "sample" we mean that it is a *proper subset* of the population (that the population contains additional members that are not part of the sample).
+
+Also, recall what we previously learned about **descriptive statistics**:
+
+* Statistical measures such as *measures of central tendency* (e.g. mean, median) and *measures of spread* (e.g. absolute deviation, standard deviation) are used to describe the *distribution* of a given collection of data points. We also use visualizations such as *histograms* and box plots to understand the shape of distributions.
+* These descriptive statistics can apply to populations or samples. When they are applied to populations they are called *population statistics*, and when they are applied to samples they are called *point estimates*.
+* In mathematical notation, we often use different symbols for a given statistic depending on whether it applies to the population or a sample. Some examples of those differences are listed below:
+  * Number
+    * $N$ is the number of individuals/cases in a population
+    * $n$ is the number of individuals/cases in sample
+  * Mean
+    * $\mu$ is the population mean (pronounced "mu")
+    * $\bar{x}$ is the sample mean (pronounced "x bar")
+  * Standard Deviation
+    * $\sigma$ is the population standard deviation (pronounced "sigma")
+    * $s$ is the sample standard deviation
+
 ## Case Study: Estimating Mean Age
 
 In the following example, let's say we are trying to estimate the **mean age of a population**.
@@ -246,7 +268,7 @@ df
 
 
 
-### Finding the Population Statistic
+### Finding the Population Statistic $\mu$
 
 Again, we actually have a census of the entire population, so if we want to know the mean age for the population, we can simply calculate that directly:
 
@@ -263,7 +285,7 @@ population_mean
 
 
 
-### One Sample
+### $\bar{x}$ for One Sample
 
 Let's see what happens when we take a sample in order to estimate this population parameter. (Again remember, this is called a point estimate!)
 
@@ -305,7 +327,7 @@ per_err
 
 As it stands, our estimate is close but about 6% off of the actual figure. We might start to wonder whether this is a normal or expected error for our sample to be off. Can we say that a sample of 50 from a population of roughly 900 will always produce a point estimate this accurate?
 
-### Five Samples
+### $\bar{x}$ for Five Samples
 
 Now let's simulate five separate data collection processes.
 
@@ -383,7 +405,7 @@ ax.legend(
 
 Now we are starting to get a better sense of how each sample estimate is likely to differ from the true population parameter.
 
-### 10,000 Samples
+### $\bar{x}$ for 10,000 Samples
 
 Now let's see what happens if we take many more samples:
 
@@ -432,6 +454,8 @@ ax.legend(
 ![png](index_files/index_23_0.png)
 
 
+### Average $\bar{x}$ vs. $\mu$
+
 Interesting! Our distribution of sample means is approximately centered around the true population mean. Let's take a look at the mean of our sample means:
 
 
@@ -447,7 +471,7 @@ ten_thousand_samples_mean
 
 
 
-Recall that this is our true population statistic:
+Recall that this is our true population statistic $\mu$:
 
 
 ```python
