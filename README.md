@@ -1,28 +1,42 @@
-
 # Introduction to Sampling 
 
 ## Introduction
 
-Rarely, if ever, are we able to completely survey a population of interest. Similarly, we will often deal with missing data. Whatever it may be, whether estimating asthma rates, fish populations, daily temperatures, material volumes, risk, manufacturing defects or any other measurement of unknown or large scale quantities, we are unlikely to have complete information of the system in question. As a result, we do our best by taking samples and using these to estimate the corresponding measurements for the complete population, from which we took the sample. These estimates of population parameters are known as **point estimates**. Interestingly, point estimates of specific parameters of a population have predictable behaviors, in that the point estimates themselves will form specific probability distributions. For example, we may want to know information about the age of a population. One parameter we might want to estimate is the mean age of the population. Once we take a sample, we can take the mean age of that sample and that would become the point estimate for the mean age of the entire population. If we continue to take more samples from the population, the mean age of each of these samples will begin to form a normal distribution! This intriguing fact lets us apply some logic and calculate confidence intervals surrounding our point estimates so that we not only have a best guess for the parameter, but also can have a range to describe various levels of certainty for our estimates. Ideally, these ranges will be small, indicating that we have a high degree of confidence that the parameter is very close to our estimate.
-
+When working purely with mathematical formulas and theoretical probabilities, we can calculate certain quantities directly. Once we start working with actual datasets and real-world data collection limitations, we start to need additional statistical techniques in order to make inferences about populations. One of the foundational concepts involved is sampling, and how point estimates from samples help us to understand population statistics.
 
 ## Objectives
 You will be able to:
 * Describe how samples are able to allow data scientists to gain insights to a population
 
-Let's start by importing a dataset to use for demonstration. In this case, we'll use a datafile concerning individuals who were on board the Titanic. We'll use this as our entire population and start to observe how the point estimates from various samples of this population behave.
+## Census vs. Sample
+
+Rarely, if ever, are we able to completely survey a **population** of interest. Whatever we are trying to measure — asthma rates, fish populations, daily temperatures, material volumes, manufacturing defects — we are unlikely to have complete information about the system in question.
+
+If we performed a complete enumeration of all data points (e.g. testing every person in a population for asthma), that would be a **census**. Similar to the United States Census, our example census would be very expensive, and for some kinds of measurements it would be simply impossible.
+
+More realistically, data scientists are typically working with a **sample** that represents some subset of the population of interest. From that sample, we can calculate **point estimates** for measurements such as the mean. Then using our knowledge of statistical distributions, we are able to make inferences about about the true population statistics, without ever having to survey the entire population!
+
+## Case Study: Estimating Mean Age
+
+In the following example, let's say we are trying to estimate the **mean age of a population**.
+
+The population we'll use is quite small: people who were on board the Titanic (a classic "toy dataset").
+
+***Note:*** In this case, we actually do have data about the entire population, since it includes fewer than 1000 people. If you have access to a complete census like this, then you don't actually need to use statistical techniques to make statements about population parameters. But we are going to use this as an example because it will allow us to compare the mean age point estimates to the true population mean age.
+
+Let's start by importing the dataset.
 
 
 ```python
 import pandas as pd
 import numpy as np
-df = pd.read_csv('titanic.csv')
-print(len(df))
-df.head()
 ```
 
-    891
 
+```python
+df = pd.read_csv('titanic.csv', index_col=0)
+df
+```
 
 
 
@@ -45,7 +59,6 @@ df.head()
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Unnamed: 0</th>
       <th>PassengerId</th>
       <th>Survived</th>
       <th>Pclass</th>
@@ -63,7 +76,6 @@ df.head()
   <tbody>
     <tr>
       <th>0</th>
-      <td>0</td>
       <td>1</td>
       <td>0</td>
       <td>3</td>
@@ -79,7 +91,6 @@ df.head()
     </tr>
     <tr>
       <th>1</th>
-      <td>1</td>
       <td>2</td>
       <td>1</td>
       <td>1</td>
@@ -95,7 +106,6 @@ df.head()
     </tr>
     <tr>
       <th>2</th>
-      <td>2</td>
       <td>3</td>
       <td>1</td>
       <td>3</td>
@@ -111,7 +121,6 @@ df.head()
     </tr>
     <tr>
       <th>3</th>
-      <td>3</td>
       <td>4</td>
       <td>1</td>
       <td>1</td>
@@ -127,7 +136,6 @@ df.head()
     </tr>
     <tr>
       <th>4</th>
-      <td>4</td>
       <td>5</td>
       <td>0</td>
       <td>3</td>
@@ -141,17 +149,111 @@ df.head()
       <td>NaN</td>
       <td>S</td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>886</th>
+      <td>887</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Montvila, Rev. Juozas</td>
+      <td>male</td>
+      <td>27.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>211536</td>
+      <td>13.0000</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>887</th>
+      <td>888</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Graham, Miss. Margaret Edith</td>
+      <td>female</td>
+      <td>19.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>112053</td>
+      <td>30.0000</td>
+      <td>B42</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>888</th>
+      <td>889</td>
+      <td>0</td>
+      <td>?</td>
+      <td>Johnston, Miss. Catherine Helen "Carrie"</td>
+      <td>female</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>2</td>
+      <td>W./C. 6607</td>
+      <td>23.4500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>889</th>
+      <td>890</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Behr, Mr. Karl Howell</td>
+      <td>male</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>111369</td>
+      <td>30.0000</td>
+      <td>C148</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>890</th>
+      <td>891</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Dooley, Mr. Patrick</td>
+      <td>male</td>
+      <td>32.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>370376</td>
+      <td>7.7500</td>
+      <td>NaN</td>
+      <td>Q</td>
+    </tr>
   </tbody>
 </table>
+<p>891 rows × 12 columns</p>
 </div>
 
 
 
-If we take a look at the population mean age we have:
+### Finding the Population Statistic
+
+Again, we actually have a census of the entire population, so if we want to know the mean age for the population, we can simply calculate that directly:
 
 
 ```python
-df.Age.mean()
+population_mean = df.Age.mean()
+population_mean
 ```
 
 
@@ -161,12 +263,19 @@ df.Age.mean()
 
 
 
+### One Sample
+
 Let's see what happens when we take a sample in order to estimate this population parameter. (Again remember, this is called a point estimate!)
+
+This represents what we might reasonably have in a real-world data collection context.
 
 
 ```python
-sample = df.sample(n=50, random_state=22) #Take a sample of 50 people
-sample.Age.mean() #Calculate the sample mean
+# Take a sample of 50 people
+sample = df.sample(n=50, random_state=22)
+# Calculate the sample mean
+sample_mean = sample.Age.mean()
+sample_mean
 ```
 
 
@@ -180,46 +289,155 @@ It's not a bad estimate, even though it's not exact. From here we can start to a
 
 
 ```python
-err = np.abs(sample.Age.mean() - df.Age.mean())
-per_err = err / df.Age.mean()
-print(per_err)
+# Find the difference between the sample and population means
+err = np.abs(sample_mean - population_mean)
+# Divide by the population mean to find a percent error
+per_err = err / population_mean
+per_err
 ```
+
+
+
 
     0.06419162827951391
 
 
-As it stands, our estimate is close but about 6% off of the actual figure. We might start to wonder whether this is a *normal* or expected error for our sample to be off. Can we say that a sample of 50 from a population of roughly 900 will always produce a point estimate this accurate? To simulate this, let's repeat this process of taking a sample (let's stick with 50 people for now) and save all of these sample means and see what happens.
+
+As it stands, our estimate is close but about 6% off of the actual figure. We might start to wonder whether this is a normal or expected error for our sample to be off. Can we say that a sample of 50 from a population of roughly 900 will always produce a point estimate this accurate?
+
+### Five Samples
+
+Now let's simulate five separate data collection processes.
+
+Again, note that this is not realistically how you would collect and analyze data — typically you only have a chance to sample once! But this is demonstrating what it might look like if you repeated your experiment five times, each time randomly sampling from the same population.
 
 
 ```python
-sample_means = []
-for i in range(10**4):
-    sample = df.sample(n=50, random_state=i) #Take a sample of 50 people
-    sample_means.append(sample.Age.mean()) #Calculate the sample mean
+five_sample_means = []
+for i in range(5):
+    sample = df.sample(n=50, random_state=i+100)
+    five_sample_means.append(sample.Age.mean())
+    
+five_sample_means
 ```
 
-The first thing we'll look at is the distribution of our sample means.
+
+
+
+    [27.504146341463418,
+     28.30263157894737,
+     26.83783783783784,
+     31.75,
+     28.573170731707318]
+
+
+
+And we can calculate the errors again:
+
+
+```python
+five_sample_errors = [np.abs(sample_mean-population_mean)/population_mean for sample_mean in five_sample_means]
+five_sample_errors
+```
+
+
+
+
+    [0.07390695345498845,
+     0.047021129876892075,
+     0.09634224973361595,
+     0.06905532943145481,
+     0.037911796866564734]
+
+
+
+We can visualize this as a bar chart, where each x tick is a different sample:
 
 
 ```python
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib.lines import Line2D
 %matplotlib inline
-
-sns.set_style('darkgrid') #Pretty background including grid lines for our backdrop
-plt.hist(sample_means, bins=250);
 ```
 
 
-![png](index_files/index_12_0.png)
+```python
+x_labels = [f"Sample {x}" for x in range(1, 6)]
+
+fig, ax = plt.subplots(figsize=(7,6))
+
+ax.bar(x_labels, five_sample_means)
+ax.set_ylabel("Mean Age")
+ax.axhline(y=population_mean, color="red", linewidth=5, linestyle="--")
+ax.legend(
+    handles=[Line2D([0],[0], color="red", linestyle="--")],
+    labels=["True Population Mean"],
+    fontsize="large"
+);
+```
 
 
-Interesting! The first thing to note here is that the sample means form a normal distribution! What's more, let's take a look at the mean of our sample means:
+![png](index_files/index_18_0.png)
+
+
+Now we are starting to get a better sense of how each sample estimate is likely to differ from the true population parameter.
+
+### 10,000 Samples
+
+Now let's see what happens if we take many more samples:
 
 
 ```python
-import numpy as np
-np.mean(sample_means)
+sample_means = []
+for i in range(10**4):
+    sample = df.sample(n=50, random_state=i)
+    sample_means.append(sample.Age.mean())
+    
+len(sample_means)
+```
+
+
+
+
+    10000
+
+
+
+Displaying this as a bar graph would be pretty unreadable (showing 10,000 ticks along the x axis) so let's use a histogram instead. This will bin the samples based on their mean ages and show the overall distribution of mean ages, rather than a single bar for each sample.
+
+
+```python
+fig, ax = plt.subplots(figsize=(8,6))
+
+ax.hist(sample_means, bins="auto")
+ax.set_xlabel("Mean Age")
+ax.set_ylabel("Count of Samples")
+ax.axvline(x=population_mean, color="red", linewidth=5, linestyle="--")
+ax.legend(
+    handles=[Line2D(
+        [0],[0],
+        color="white",
+        marker="|",
+        markersize=15,
+        markeredgewidth=1.5,
+        markeredgecolor="red"
+    )],
+    labels=["True Population Mean"],
+    fontsize="large"
+);
+```
+
+
+![png](index_files/index_23_0.png)
+
+
+Interesting! Our distribution of sample means is approximately centered around the true population mean. Let's take a look at the mean of our sample means:
+
+
+```python
+ten_thousand_samples_mean = np.mean(sample_means)
+ten_thousand_samples_mean
 ```
 
 
@@ -229,18 +447,37 @@ np.mean(sample_means)
 
 
 
-Wow! Look at that! The mean of our sample means is extremely close to the actual mean of the population! The mean of means of this simulation shows an accuracy of 99.9%
+Recall that this is our true population statistic:
 
 
 ```python
-population_mean = df.Age.mean()
-mean_sample_means = np.mean(sample_means)
-acc = 1 - (np.abs(mean_sample_means - population_mean) / population_mean)
-print(acc)
+population_mean
 ```
+
+
+
+
+    29.69911764705882
+
+
+
+Those are pretty close. How close exactly?
+
+
+```python
+err = np.abs(ten_thousand_samples_mean - population_mean) / population_mean
+accuracy = 1 - err
+accuracy
+```
+
+
+
 
     0.9992936336582157
 
+
+
+Wow! Look at that! The mean of our sample means is extremely close to the actual mean of the population! The mean of means of this simulation shows an accuracy of 99.9%. This will prove useful as we dive into the relationship between samples and distributions.
 
 ## Summary
 
