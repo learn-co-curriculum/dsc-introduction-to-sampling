@@ -5,7 +5,9 @@
 When working purely with mathematical formulas and theoretical probabilities, we can calculate certain quantities directly. Once we start working with actual datasets and real-world data collection limitations, we start to need additional statistical techniques in order to make inferences about populations. One of the foundational concepts involved is sampling, and how point estimates from samples help us to understand population statistics.
 
 ## Objectives
+
 You will be able to:
+
 * Describe how samples are able to allow data scientists to gain insights to a population
 
 ## Census vs. Sample
@@ -400,7 +402,9 @@ ax.legend(
 ```
 
 
+    
 ![png](index_files/index_18_0.png)
+    
 
 
 Now we are starting to get a better sense of how each sample estimate is likely to differ from the true population parameter.
@@ -451,7 +455,9 @@ ax.legend(
 ```
 
 
+    
 ![png](index_files/index_23_0.png)
+    
 
 
 ### Average $\bar{x}$ vs. $\mu$
